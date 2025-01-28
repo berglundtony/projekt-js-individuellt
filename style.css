@@ -5,13 +5,32 @@ body {
     font-size: 1rem;
 }
 
+main {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 1fr;
+    gap: 2px;
+    padding: 5px;
+}
+
+.my_movies_wrapper {
+    background-color: gray;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+}
+
 div.page_wrapper {
     background-color: #f5f5f5;
+    /* Låter filmsektionen ta upp 4 kolumner */
+    /* Filmer i fyra kolumner */
+    grid-column: span 4;
+    gap: 20px;
     padding: 20px;
     margin: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    width: 90%;
+    max-width: 1800px;
 
     h1 {
         text-align: center;
@@ -21,21 +40,33 @@ div.page_wrapper {
 #movies {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 10px;
+}
+
+.movies {
+    background-color: #ddd;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    text-align: center;
+    width: calc((100% / 4) - 10px);
+    /* Fyra filmer per rad */
+    box-sizing: border-box;
 }
 
 .movie_card {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border: 1px solid #e3e3e3;
-    border-radius: var(--imageBorderRadius);
+    border: 1px solid darkgray;
+    border-radius: 8px;
     overflow: hidden;
     height: auto;
     margin-top: 30px;
     max-width: 250px;
     padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 
     &:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -55,7 +86,7 @@ div.page_wrapper {
     justify-content: flex-start;
     align-items: center;
     margin-bottom: 5px;
-    background-color: rgba(255, 0, 0, 0.1);
+    background-color: #fff;
 
     .btn {
         display: inline-block;
@@ -75,4 +106,10 @@ div.page_wrapper {
             background-color: #e3e3e3;
         }
     }
+
+    span {
+        margin-right: 10px;
+        background-color: #fff;
+    }
+
 }
