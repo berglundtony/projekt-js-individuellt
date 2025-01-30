@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The movie</title>
+    <script type="module" src="./modules/dom-view.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script type="module">
+        import { onPageLoad } from './modules/dom-view.js';
+        onPageLoad();
+    </script> -->
+</head>
+
+<body>
+    <main>
+        <div class="tabs">
+            <button class="tab-button active" id="popular" data-tab="popular">Populära filmer</button>
+            <button class="tab-button" id="wishlist" data-tab="wishlist">Önskelista</button>
+            <button class="tab-button" id="seen" data-tab="seen">Sedda filmer</button>
+        </div>
+
+        <div class="tab-content active" id="popular">
+            <div class="page_wrapper">
+                <header>
+                    <h1>Filmer</h1>
+                </header>
+                <section id="movies">
+                </section>
+            </div>
+        </div>
+
+        <div class="tab-content" id="wishlist">
+            <h2>Innehåll för Flik 2</h2>
+            <p>Här finns innehållet för den andra fliken.</p>
+        </div>
+
+        <div class="tab-content" id="seen">
+            <div class="page_wrapper-detail">
+                <header>
+                    <h1>Filmer jag sett</h1>
+                </header>
+                <section id="seenMoviesDisplay">
+                </section>
+            </div>
+        </div>
+
+        <div class="page-wrapper-detail">
+            <header>
+                <h1 id="header-title"></h1>
+                <label for="seenCb">
+                    Har sett:
+                    <input type="checkbox" name="seenCheckbox" id="seenCb">
+                </label>
+            </header>
+            <section id="movieDetail">
+                <img id="movie-image">
+                <p id="movie-rtRating">Mitt betyg:</p>
+                <p id="movie-rating"></p>
+                <H4>Beskrivning</H4>
+                <p id="movie-description"></p>
+                <p id="movie-my-rating">Sätt betyg: 1/5</p>
+                <select id="movie-rating-select">
+                    <option value="1">1/5</option>
+                    <option value="2">2/5</option>
+                    <option value="3">3/5</option>
+                    <option value="4">4/5</option>
+                    <option value="5">5/5</option>
+                </select>
+            </section>
+        </div>
+
+    </main>
+</body>
+
+</html>
