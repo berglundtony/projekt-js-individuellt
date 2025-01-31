@@ -13,6 +13,7 @@ export async function fetchMovies() {
         const data = await response.json();
         // ändra i varje filmobjekt, så den får review och rating
         // loopa över listan
+        console.log("data", data)
         data.results.forEach(movie => {
             movie.seen = false;
             movie.rating = 0;

@@ -14,7 +14,7 @@
         <div class="tabs">
             <button class="tab-button active" id="popular" data-tab="popular">Populära filmer</button>
             <button class="tab-button" id="wishlist" data-tab="wishlist">Önskelista</button>
-            <button class="tab-button" id="seen" data-tab="seen">Sedda filmer</button>
+            <button class="tab-button" id="seentab" data-tab="seentab">Sedda filmer</button>
         </div>
         <!-- <form id="bucketForm">
             <input type="text" id="activityName" placeholder="Vad vill du göra?" required />
@@ -40,11 +40,16 @@
         </div>
         
         <div class="tab-content" id="wishlist">
-            <h2>Innehåll för Flik 2</h2>
-            <p>Här finns innehållet för den andra fliken.</p>
+            <div class="page_wrapper">
+                <header>
+                    <h1>Filmer önskelista</h1>
+                </header>
+                <section id="wishMoviesDisplay">
+                </section>
+            </div>
         </div>
         
-        <div class="tab-content active" id="seen">
+        <div class="tab-content" id="seentab">
         <div class="page_wrapper">
             <header>
                 <h1>Filmer jag sett</h1>

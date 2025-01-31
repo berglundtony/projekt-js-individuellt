@@ -9,9 +9,9 @@ body {
 
 .tabs {
     display: flex;
-
     border-bottom: 2px solid #ddd;
-    margin-bottom: 10px;
+    margin: 0 1.1em 0 .9em;
+    width: 96%;
 }
 
 .tab-button {
@@ -36,7 +36,6 @@ body {
 
 .tab-content {
     display: none;
-    padding: 10px 0;
     width: 100%;
 }
 
@@ -59,7 +58,7 @@ div.page_wrapper {
     margin: .4em;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 95%;
+    width: 97%;
     max-width: 1800px;
 
     h1 {
@@ -67,7 +66,7 @@ div.page_wrapper {
     }
 
     header {
-        padding-top: .8em;
+        padding-top: .1em;
     }
 }
 
@@ -81,7 +80,9 @@ div.page_wrapper {
 .movie_card {
     display: grid;
     padding: 1.5rem;
-    margin-bottom: 1.5em;
+    margin-bottom: .8em;
+    line-height: .5;
+    font-weight: 500;
     border: 1px solid darkgray;
     border-radius: 8px;
     background-color: #fff;
@@ -102,20 +103,24 @@ div.page_wrapper {
 
 .button_container {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
     background-color: #fff;
 
     .addMovieWishList {
         display: inline-block;
-        width: 100px;
-        background-color: #f5f5f5;
-        border: 1px solid #e3e3e3;
+        background-color: gray;
+        color: white;
+        width:90px;
+        height: auto;
+        padding: 15px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        border: 1px solid #757272;
         border-radius: 5px;
         padding: 5px 15px;
         font-size: 0.8rem;
-        color: #000;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -123,6 +128,8 @@ div.page_wrapper {
 
         &:hover {
             background-color: #e3e3e3;
+            color: black;
+
         }
     }
 
@@ -130,9 +137,31 @@ div.page_wrapper {
         margin-right: 10px;
         background-color: #fff;
     }
+
+}
+
+.page-wrapper-detail.invisible {
+    display: none;
 }
 
 /* ------------------------- Page Detail --------------------------------- */
+.page-wrapper-detail {
+    width: 91%;
+    background-color: #ddd;
+    margin: 1em;
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: block;
+
+    header {
+        margin-left: 1em;
+    }
+
+    .inactive {
+        display: none;
+    }
+}
+
 .page_detail_wrapper {
     grid-column: span 6;
     background-color: #f5f5f5;
@@ -177,17 +206,29 @@ div.page_wrapper {
     line-height: 1.5em;
 }
 
-#seenMoviesDisplay {
+#seenMoviesDisplay, #wishMoviesDisplay {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: 1.2rem;
     margin: 0 1.4em;
 }
 
-.page-wrapper-detail {
-    width: 91%;
-    background-color: #ddd;
-    margin: 1em;
-    padding: 1.5rem;
-    border-radius: 8px;
+#back-button {
+    background-color: gray;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#back-button:hover {
+    background-color: darkgray;
+}
+
+#seentab.disabled,
+#wishlist.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
 }
