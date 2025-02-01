@@ -43,7 +43,6 @@ export async function displayWishedMovies() {
     displayMovies(_myMovies, wishMoviesId);
 }
 
-
 export function displaySeenMovies() {
     _seenMovies = JSON.parse(localStorage.getItem('seen_movies'));
 
