@@ -23,8 +23,8 @@ export function disableTabButtons() {
 
 export async function checkMovies() {
     // Kolla om det redan finns filmer i localstorage
-    const movies = JSON.parse(localStorage.getItem('all_movies')) || [];
-
+    let movies = JSON.parse(localStorage.getItem('all_movies')) || [];
+    movies = movies.filter(movie => !movie.seen);
     console.log('movies:', movies);
     if (movies && movies.length > 0) {
         displayMovies(movies, allMoviesId);
@@ -66,6 +66,9 @@ function displayMovies(movies, moviesContainerId) {
     let moviesContainerEl = document.getElementById(moviesContainerId);
     moviesContainerEl.innerHTML = '';
     console.log(moviesContainerId);
+    // if(moviesContainerId === 'movies')
+    // movies = movies.filter(m => !m.seen)
+    console.log(`filmer filtrerade ${movies}`)
 
     if (movies && movies.length > 0) {
         movies.forEach(movie => {
@@ -88,8 +91,16 @@ async function makeCard(movie, moviesContainerEl) {
     let buttonContainerDelEl;
     let buttonDelEl;
     let seenEl;
+    let ratingEl
 
     movieContainerEl.classList.add('movie_card');
+    if (movie.wish === 'true') {
+        console.log('Adding wished class');
+        movieContainerEl?.classList.add('wished');
+    } else {
+        console.log('Removing wished class');
+        movieContainerEl.classList.remove('wished');
+    }
     movieContainerEl.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${encodeURIComponent(movie.title)}" />`;
 
     const movieTitleEl = document.createElement('h3');
@@ -101,15 +112,10 @@ async function makeCard(movie, moviesContainerEl) {
     const voteAvarageEl = document.createElement('p');
     voteAvarageEl.textContent = `Betyg: ${movie.vote_average}`;
 
-    const ratingEl = document.createElement('p');
-    ratingEl.textContent = `Mitt betyg: ${movie.rating}`;
-
-    seenEl = document.createElement('p');
-    seenEl.textContent = `Har sett: ${movie.seen}`;
-
-
-    // const wishEl = document.createElement('p');
-    // wishEl.textContent = `Är med på önskelista: ${movie.wish}`
+    if (moviesContainerEl.id === 'seenMoviesDisplay') {
+        ratingEl = document.createElement('p');
+        ratingEl.textContent = `Mitt betyg: ${movie.rating}`;
+    }
 
     // Knappar för Populära filmer
     if (moviesContainerEl.id === 'movies') {
@@ -133,7 +139,6 @@ async function makeCard(movie, moviesContainerEl) {
 
     // Ta bort knappar för önskelista
     if (moviesContainerEl.id === 'wishMoviesDisplay') {
-
         buttonContainerDelEl = document.createElement('div');
         buttonContainerDelEl.classList.add('button_container');
 
@@ -151,9 +156,9 @@ async function makeCard(movie, moviesContainerEl) {
     movieContainerEl.appendChild(movieTitleEl);
     movieContainerEl.appendChild(releaseDateEl);
     movieContainerEl.appendChild(voteAvarageEl);
-    movieContainerEl.appendChild(ratingEl);
-    movieContainerEl.appendChild(seenEl);
-
+    if (moviesContainerEl.id === 'seenMoviesDisplay') {
+        movieContainerEl.appendChild(ratingEl);
+    }
 
     // Append för button-container och delete knappar för Populära filmer.
     if (moviesContainerEl.id === 'movies') {

@@ -4,7 +4,15 @@ body {
     font-family: "Source Sans Pro", Arial, sans-serif;
     font-size: 1rem;
 }
-
+header{
+    display: flex;
+    justify-content: space-around;
+   
+    span{
+        align-self: center;
+        color:#a20000
+    };
+}
 /* ------------------------- Tabs --------------------------------- */
 
 .tabs {
@@ -101,6 +109,10 @@ div.page_wrapper {
     }
 }
 
+.movie_card.wished {
+    border: 2px solid #a20000;;
+}
+
 .button_container {
     display: flex;
     justify-content: space-between;
@@ -108,11 +120,12 @@ div.page_wrapper {
     margin-bottom: 5px;
     background-color: #fff;
 
-    .addMovieWishList, .deleteMovieWishList {
+    .addMovieWishList,
+    .deleteMovieWishList {
         display: inline-block;
         background-color: gray;
         color: white;
-        width:90px;
+        width: 90px;
         height: auto;
         padding: 15px 10px;
         border-radius: 8px;
@@ -206,7 +219,8 @@ div.page_wrapper {
     line-height: 1.5em;
 }
 
-#seenMoviesDisplay, #wishMoviesDisplay {
+#seenMoviesDisplay,
+#wishMoviesDisplay {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: 1.2rem;

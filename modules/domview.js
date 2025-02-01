@@ -1,7 +1,5 @@
 import { disableTabButtons } from './dom.js';
 
-// import { MovieStorage } from './movieStorage.js';
-
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 let moviesFromLs = [];
@@ -14,13 +12,15 @@ export async function onPageLoad() {
     // Hämta filmen från LS.
     moviesFromLs = JSON.parse(localStorage.getItem('all_movies')) || [];
     console.log(moviesFromLs);
-    if (moviesFromLs && moviesFromLs.length > 0) {
-        currentMovie = moviesFromLs.find((element) => String(element.id) === id);
-        if (currentMovie) {
-            console.log('Hittad film:', currentMovie);
-            renderMovieToUI(currentMovie);
-        }
+    // if (moviesFromLs && moviesFromLs.length > 0) {
+    currentMovie = moviesFromLs.find((element) => String(element.id) === id);
+    if (!currentMovie) {
+        console.error(`Ingen film hittades med id ${id}`);
+        return;
     }
+    console.log('Hittad film:', currentMovie);
+    renderMovieToUI(currentMovie);
+    // }
 }
 onPageLoad();
 
@@ -45,8 +45,10 @@ function renderMovieToUI(currentMovie) {
         document.getElementById('seen').checked = currentMovie.seen;
     } else {
         document.getElementById('seen')
-    };
-    document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
+    }
+    if (currentMovie.seen === true) {
+        document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
+    }
     document.getElementById('movie-rtRating').innerText = '';
     document.getElementById('movie-description').innerText = currentMovie.overview;
 };
@@ -62,13 +64,20 @@ seenCheckboxEl.addEventListener('click', (e) => {
 
 // Uppdaterar sedda filmer
 function updateSeenMovies(seen, currentMovie) {
+
+    if (!currentMovie || !currentMovie.id) {
+        console.error('Ogiltig film, kan inte uppdatera seen_movies:', currentMovie);
+        return;
+    }
     let seenmoviesFromLs = JSON.parse(localStorage.getItem('seen_movies') || '[]');
 
     if (seen) {
+        const index = seenmoviesFromLs.findIndex(m => m.id === currentMovie.id)
         // Lägg till filmen om den inte redan finns
         if (!seenmoviesFromLs.some(m => m.id === currentMovie.id)) {
             seenmoviesFromLs.push(currentMovie);
-
+        } else {
+            seenmoviesFromLs[index] = currentMovie;
         }
     } else {
         // Ta bort den aktuella filmen om den redan finns
@@ -79,15 +88,18 @@ function updateSeenMovies(seen, currentMovie) {
     try {
         localStorage.setItem('seen_movies', JSON.stringify(seenmoviesFromLs));
         console.log('Uppdaterad seen_movies:', seenmoviesFromLs);
+
     } catch (error) {
-        console.error('Kunde inte läsa från localStorage:', error);
+        console.error('Kunde inte uppdatera localStorage:', error);
     }
 }
 
-// Uppdatera all_movies och seen_movies på ett ställe
 function handleSeenToggle(seen, currentMovie) {
     // Uppdatera currentMovie och moviesFromLs
+    // moviesFromLs = JSON.parse(localStorage.getItem('all_movies') || '[]');
+    console.log(`currentMovie ${currentMovie}`);
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
+    console.log(`index: ${index}`);
     if (index !== -1) {
         currentMovie.seen = seen;
         moviesFromLs[index] = currentMovie;
@@ -100,20 +112,18 @@ function handleSeenToggle(seen, currentMovie) {
 // ändra värde på vår rating
 document.getElementById('movie-rating-select').addEventListener('change', (e) => {
     const rating = e.target.value;
-
     // uppdatera currentMovie med nya ratingen
     currentMovie.rating = rating;
-    // har man ej klickat i att man sett filmen, men ratear, då sätter vi filmen till sedd
+    // Har man ej sett filmen men sätter betyg, markera som sedd
     if (!currentMovie.seen) {
         currentMovie.seen = 'true';
-        // uppdatera elementet
         seenCheckboxEl.checked = 'true';
     }
+    // updateSeenMovies(currentMovie.seen, currentMovie);
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
     // uppdatera lokala listan med nya ratingen
     moviesFromLs.splice(index, 1, currentMovie);
-
     // uppdatera UI med nya ratingen:
-    document.getElementById('movie-rtRating').innerText = `Mitt betyg: ${rating}/5`;
+    document.getElementById('movie-rtRating').innerText = `Mitt betyg: ${rating}/10`;
     handleSeenToggle(currentMovie.seen, currentMovie);
 });
