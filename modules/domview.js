@@ -1,4 +1,7 @@
 import { disableTabButtons } from './dom.js';
+import { debounce } from './utils.js';  
+import { MovieStorage } from './movieStorage.js';
+
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 let moviesFromLs = [];
@@ -16,12 +19,8 @@ export async function onPageLoad() {
         if (currentMovie) {
             console.log('Hittad film:', currentMovie);
             renderMovieToUI(currentMovie);
-        } else {
-            console.warn('Ingen film hittades med id:', id);
-        }
-    } else {
-        console.warn('Inga filmer finns i localStorage');
-    }
+        } 
+    } 
 }
 onPageLoad();
 
@@ -42,37 +41,50 @@ function renderMovieToUI(currentMovie) {
     movieImageEl.setAttribute('src', `${IMAGE_BASE_URL}${currentMovie.poster_path}`);
     movieImageEl.setAttribute('alt', `Movie poster of ${currentMovie.title}`);
     document.getElementById('header-title').innerText = currentMovie.title;
-    document.getElementById('seen').checked = currentMovie.seen;
+    if (currentMovie.seen === true) {
+        document.getElementById('seen').checked = currentMovie.seen; 
+    } else {
+        document.getElementById('seen')
+    };
     document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
     document.getElementById('movie-rtRating').innerText = '';
     document.getElementById('movie-description').innerText = currentMovie.overview;
 };
-
+const debouncedUpdateSeenMovies = debounce(handleSeenToggle, 500);
 // skapa eventlyssnare för när man togglar checkboxen för 'seen'
 const seenCheckboxEl = document.getElementById('seen');
 console.log(seenCheckboxEl);
 seenCheckboxEl.addEventListener('click', (e) => {
     currentMovie.seen = e.target.checked;
     // Uppdatera sedda filmer
-    handleSeenToggle(currentMovie.seen, currentMovie);
+    debouncedUpdateSeenMovies(seen, currentMovie);
 });
 
 // Uppdaterar sedda filmer
 function updateSeenMovies(seen, currentMovie) {
     let seenmoviesFromLs = JSON.parse(localStorage.getItem('seen_movies') || '[]');
 
+    // Ta bort den aktuella filmen om den redan finns
+    seenmoviesFromLs = seenmoviesFromLs.filter(m => m.id !== currentMovie.id);
+ 
     if (seen) {
         // Lägg till filmen om den inte redan finns
-        if (!seenmoviesFromLs.some(m => m.id === currentMovie.id)) {
+        // if (!seenmoviesFromLs.some(m => m.id === currentMovie.id)) {
             seenmoviesFromLs.push(currentMovie);
-        }
+        // }
     } else {
-        // Ta bort filmen om den finns
+        // Ta bort filmen om de man kryssat ur kryssrutan
         seenmoviesFromLs = seenmoviesFromLs.filter(m => m.id !== currentMovie.id);
     }
 
     // Uppdatera localStorage
-    localStorage.setItem('seen_movies', JSON.stringify(seenmoviesFromLs));
+    try {
+        seenmoviesFromLs = JSON.parse(localStorage.getItem('seen_movies') || '[]');
+    } catch (error) {
+        console.error('Kunde inte läsa från localStorage:', error);
+        seenmoviesFromLs = [];
+    }
+  
     console.log('Uppdaterad seen_movies:', seenmoviesFromLs);
 }
 
@@ -98,9 +110,9 @@ document.getElementById('movie-rating-select').addEventListener('change', (e) =>
     currentMovie.rating = rating;
     // har man ej klickat i att man sett filmen, men ratear, då sätter vi filmen till sedd
     if (!currentMovie.seen) {
-        currentMovie.seen = true;
+        currentMovie.seen = 'true';
         // uppdatera elementet
-        seenCheckboxEl.checked = true;
+        seenCheckboxEl.checked = 'true';
     }
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
     // uppdatera lokala listan med nya ratingen

@@ -16,7 +16,7 @@ clickTabEvents();
 export function disableTabButtons() {
     const tabButtons = document.querySelectorAll('.tab-button');
     tabButtons.forEach(button => {
-        button.disabled = true;
+        button.disabled = 'true';
         button.classList.add('disabled');
     });
 }
@@ -38,14 +38,9 @@ export async function checkMovies() {
 export async function displayWishedMovies() {
     _allMovies = JSON.parse(localStorage.getItem('all_movies')) || [];
     if (_allMovies && _allMovies.length > 0) {
-        _allMovies.forEach(movie => {
-            if (movie.wish === 'true') {
-                _myMovies.push(movie);
-                console.log(_myMovies)
-            } 
-        });
-        displayMovies(_myMovies, wishMoviesId)
-    }
+        _myMovies = _allMovies.filter(movie => movie.wish === 'true');
+    };
+    displayMovies(_myMovies, wishMoviesId);
 }
 
 
@@ -55,7 +50,6 @@ export function displaySeenMovies() {
     if (_seenMovies && _seenMovies.length > 0) {
         console.log('Seen movies:', _seenMovies);
         if (_seenMovies) {
-            //rendera till LS.
             displayMovies(_seenMovies, seenMoviesId);
         }
         else {
@@ -91,6 +85,10 @@ async function makeCard(movie, moviesContainerEl) {
     let buttonContainerEl;
     let spanTextDescribingButtonEl;
     let buttonEl;
+    let buttonContainerDelEl;
+    let buttonDelEl;
+    let seenEl;
+
     movieContainerEl.classList.add('movie_card');
     movieContainerEl.innerHTML = `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${encodeURIComponent(movie.title)}" />`;
 
@@ -106,8 +104,14 @@ async function makeCard(movie, moviesContainerEl) {
     const ratingEl = document.createElement('p');
     ratingEl.textContent = `Mitt betyg: ${movie.rating}`;
 
-    const seenEl = document.createElement('p');
+    seenEl = document.createElement('p');
     seenEl.textContent = `Har sett: ${movie.seen}`;
+
+
+    // const wishEl = document.createElement('p');
+    // wishEl.textContent = `Är med på önskelista: ${movie.wish}`
+
+    // Knappar för Populära filmer
     if (moviesContainerEl.id === 'movies') {
         buttonContainerEl = document.createElement('div');
         buttonContainerEl.classList.add('button_container');
@@ -126,20 +130,46 @@ async function makeCard(movie, moviesContainerEl) {
             addToMyMovieList(id);
         });
     }
+
+    // Ta bort knappar för önskelista
+    if (moviesContainerEl.id === 'wishMoviesDisplay') {
+
+        buttonContainerDelEl = document.createElement('div');
+        buttonContainerDelEl.classList.add('button_container');
+
+        buttonDelEl = document.createElement('button');
+        buttonDelEl.id = movie.id;
+        buttonDelEl.classList.add('deleteMovieWishList');
+        buttonDelEl.textContent = 'Ta bort';
+        buttonDelEl.addEventListener('click', function (event) {
+            event.stopPropagation();
+            const id = buttonDelEl.getAttribute('id');
+            console.log('id:', id);
+            deleteFromMyMovieList(id);
+        });
+    }
     movieContainerEl.appendChild(movieTitleEl);
     movieContainerEl.appendChild(releaseDateEl);
     movieContainerEl.appendChild(voteAvarageEl);
     movieContainerEl.appendChild(ratingEl);
     movieContainerEl.appendChild(seenEl);
+
+
+    // Append för button-container och delete knappar för Populära filmer.
     if (moviesContainerEl.id === 'movies') {
         buttonContainerEl.appendChild(spanTextDescribingButtonEl);
         buttonContainerEl.appendChild(buttonEl);
         movieContainerEl.appendChild(buttonContainerEl);
     }
+    // Append för button-container och delete knappar för önskelistan.
+    if (moviesContainerEl.id === 'wishMoviesDisplay') {
+        buttonContainerDelEl.appendChild(buttonDelEl);
+        movieContainerEl.appendChild(buttonContainerDelEl);
+    }
     moviesContainerEl.appendChild(movieContainerEl);
 };
 
-// Hantera mina filmer
+// Lägger till filmer från Min önskelista och uppdaterar värdet i 'all_movies' i LS
 function addToMyMovieList(id) {
     const movieList = JSON.parse(localStorage.getItem('all_movies'));
     console.log('movieList:', movieList);
@@ -147,27 +177,26 @@ function addToMyMovieList(id) {
     let currentMovie = {};
     if (movieList && movieList.length > 0) {
         currentMovie = movieList.find((element) => element.id === Number(id)) || {};
-        if (!movieList.some(m => m.id === currentMovie.id)) {
+        console.log(currentMovie)
+        if (movieList.some((m) => m.id === currentMovie.id)) {
             index = movieList.findIndex((movie) => movie.id === Number(id));
-            console.log('currentMovie:', currentMovie);
+            console.log('currentMovie index:', index);
             currentMovie.wish = 'true';
             movieList.splice(index, 1, currentMovie);
         }
     }
-
     localStorage.setItem('all_movies', JSON.stringify(movieList));
 }
 
-const deleteButtons = document.querySelectorAll('.deleteFromMovieWishList');
-deleteButtons.forEach(button =>
-    button.addEventListener('click', function () {
-        const id = button.getAttribute('id');
-        console.log('id:', id);
-        const myMovieList = JSON.parse(localStorage.getItem('myMovieList'));
-        const currentDelMovie = myMovieList.find(movie => movie.id === Number(id));
-        console.log(currentDelMovie);
-        myMovieList.splice(myMovieList.indexOf(currentDelMovie), 1);
-        localStorage.setItem('myMovieList', JSON.stringify(myMovieList));
-        displayMyMovies();
-    })
-);
+// Tar bort filmer från Min önskelista och uppdaterar värdet i 'all_movies' i LS
+function deleteFromMyMovieList(id) {
+    _allMovies = JSON.parse(localStorage.getItem('all_movies'));
+    const currentDelMovie = _allMovies.find(movie => movie.id === Number(id));
+    currentDelMovie.wish = 'false';
+    console.log(currentDelMovie);
+    const index = _allMovies.findIndex((m) => m.id === currentDelMovie.id);
+    _allMovies.splice(index, 1, currentDelMovie);
+    localStorage.setItem('all_movies', JSON.stringify(_allMovies));
+    displayWishedMovies();
+}
+
