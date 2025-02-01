@@ -1,6 +1,6 @@
 import { disableTabButtons } from './dom.js';
-import { debounce } from './utils.js';  
-import { MovieStorage } from './movieStorage.js';
+
+// import { MovieStorage } from './movieStorage.js';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -19,8 +19,8 @@ export async function onPageLoad() {
         if (currentMovie) {
             console.log('Hittad film:', currentMovie);
             renderMovieToUI(currentMovie);
-        } 
-    } 
+        }
+    }
 }
 onPageLoad();
 
@@ -32,7 +32,7 @@ document.getElementById('back-button').addEventListener('click', () => {
     if (window.history.length > 1) {
         window.history.back();
     } else {
-        window.location.href = 'index.html'; 
+        window.location.href = 'index.html';
     }
 });
 
@@ -42,7 +42,7 @@ function renderMovieToUI(currentMovie) {
     movieImageEl.setAttribute('alt', `Movie poster of ${currentMovie.title}`);
     document.getElementById('header-title').innerText = currentMovie.title;
     if (currentMovie.seen === true) {
-        document.getElementById('seen').checked = currentMovie.seen; 
+        document.getElementById('seen').checked = currentMovie.seen;
     } else {
         document.getElementById('seen')
     };
@@ -50,42 +50,38 @@ function renderMovieToUI(currentMovie) {
     document.getElementById('movie-rtRating').innerText = '';
     document.getElementById('movie-description').innerText = currentMovie.overview;
 };
-const debouncedUpdateSeenMovies = debounce(handleSeenToggle, 500);
+
 // skapa eventlyssnare för när man togglar checkboxen för 'seen'
 const seenCheckboxEl = document.getElementById('seen');
-console.log(seenCheckboxEl);
+
 seenCheckboxEl.addEventListener('click', (e) => {
     currentMovie.seen = e.target.checked;
     // Uppdatera sedda filmer
-    debouncedUpdateSeenMovies(seen, currentMovie);
+    handleSeenToggle(currentMovie.seen, currentMovie);
 });
 
 // Uppdaterar sedda filmer
 function updateSeenMovies(seen, currentMovie) {
     let seenmoviesFromLs = JSON.parse(localStorage.getItem('seen_movies') || '[]');
 
-    // Ta bort den aktuella filmen om den redan finns
-    seenmoviesFromLs = seenmoviesFromLs.filter(m => m.id !== currentMovie.id);
- 
     if (seen) {
         // Lägg till filmen om den inte redan finns
-        // if (!seenmoviesFromLs.some(m => m.id === currentMovie.id)) {
+        if (!seenmoviesFromLs.some(m => m.id === currentMovie.id)) {
             seenmoviesFromLs.push(currentMovie);
-        // }
+
+        }
     } else {
-        // Ta bort filmen om de man kryssat ur kryssrutan
+        // Ta bort den aktuella filmen om den redan finns
         seenmoviesFromLs = seenmoviesFromLs.filter(m => m.id !== currentMovie.id);
     }
 
     // Uppdatera localStorage
     try {
-        seenmoviesFromLs = JSON.parse(localStorage.getItem('seen_movies') || '[]');
+        localStorage.setItem('seen_movies', JSON.stringify(seenmoviesFromLs));
+        console.log('Uppdaterad seen_movies:', seenmoviesFromLs);
     } catch (error) {
         console.error('Kunde inte läsa från localStorage:', error);
-        seenmoviesFromLs = [];
     }
-  
-    console.log('Uppdaterad seen_movies:', seenmoviesFromLs);
 }
 
 // Uppdatera all_movies och seen_movies på ett ställe
@@ -97,7 +93,6 @@ function handleSeenToggle(seen, currentMovie) {
         moviesFromLs[index] = currentMovie;
         localStorage.setItem('all_movies', JSON.stringify(moviesFromLs));
     }
-
     // Uppdatera seen_movies
     updateSeenMovies(currentMovie.seen, currentMovie);
 }
