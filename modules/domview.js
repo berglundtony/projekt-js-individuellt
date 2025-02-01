@@ -27,7 +27,6 @@ onPageLoad();
 if (window.location.href.includes('movieDetail.html')) {
     disableTabButtons();
 }
-
 document.getElementById('back-button').addEventListener('click', () => {
     if (window.history.length > 1) {
         window.history.back();
@@ -45,12 +44,11 @@ function renderMovieToUI(currentMovie) {
         document.getElementById('seen').checked = currentMovie.seen;
     } else {
         document.getElementById('seen')
-    }
-    if (currentMovie.seen === true) {
-        document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
-    }
+    };
+   
+    document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
     document.getElementById('movie-rtRating').innerText = '';
-    document.getElementById('movie-description').innerText = currentMovie.overview;
+    document.getElementById('movie-description').innerText = currentMovie.overview
 };
 
 // skapa eventlyssnare för när man togglar checkboxen för 'seen'
@@ -61,6 +59,7 @@ seenCheckboxEl.addEventListener('click', (e) => {
     // Uppdatera sedda filmer
     handleSeenToggle(currentMovie.seen, currentMovie);
 });
+
 
 // Uppdaterar sedda filmer
 function updateSeenMovies(seen, currentMovie) {
