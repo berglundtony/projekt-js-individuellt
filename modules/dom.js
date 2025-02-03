@@ -11,6 +11,7 @@ const seenMoviesId = 'seenMoviesDisplay';
 const allMoviesId = 'movies';
 const wishMoviesId = 'wishMoviesDisplay';
 
+
 clickTabEvents();
 
 export function disableTabButtons() {

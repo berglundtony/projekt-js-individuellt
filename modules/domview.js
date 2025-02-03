@@ -45,7 +45,7 @@ function renderMovieToUI(currentMovie) {
     } else {
         document.getElementById('seen')
     };
-   
+
     document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
     document.getElementById('movie-rtRating').innerText = '';
     document.getElementById('movie-description').innerText = currentMovie.overview
@@ -56,8 +56,9 @@ const seenCheckboxEl = document.getElementById('seen');
 
 seenCheckboxEl.addEventListener('click', (e) => {
     currentMovie.seen = e.target.checked;
-    // Uppdatera sedda filmer
-    handleSeenToggle(currentMovie.seen, currentMovie);
+        // Uppdatera sedda filmer
+        handleSeenToggle(currentMovie.seen, currentMovie);
+
 });
 
 
@@ -95,7 +96,6 @@ function updateSeenMovies(seen, currentMovie) {
 
 function handleSeenToggle(seen, currentMovie) {
     // Uppdatera currentMovie och moviesFromLs
-    // moviesFromLs = JSON.parse(localStorage.getItem('all_movies') || '[]');
     console.log(`currentMovie ${currentMovie}`);
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
     console.log(`index: ${index}`);

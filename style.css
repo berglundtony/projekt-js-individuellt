@@ -52,6 +52,8 @@ header {
     display: block;
 }
 
+/* Wrappers */
+
 .my_movies_wrapper {
     background-color: gray;
     padding: 20px;
@@ -82,6 +84,8 @@ div.page_wrapper {
     }
 }
 
+/* Kort */
+
 #movies {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
@@ -111,10 +115,17 @@ div.page_wrapper {
         object-fit: cover;
         margin-bottom: 10px;
     }
+
+    h3{
+        line-height: 1.4em;
+    }
 }
 
 .movie_card.wished {
     border: 2px solid #a20000;
+    p{
+        line-height: 1.4em;
+    }
 }
 
 .button_container {
@@ -160,6 +171,9 @@ div.page_wrapper {
 .page-wrapper-detail.invisible {
     display: none;
 }
+
+
+/* Detalj sida */
 
 .page-wrapper-detail {
     width: 94%;
