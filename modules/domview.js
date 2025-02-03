@@ -56,7 +56,6 @@ seenCheckboxEl.addEventListener('click', (e) => {
     currentMovie.seen = e.target.checked;
         // Uppdatera sedda filmer
         handleSeenToggle(currentMovie.seen, currentMovie);
-
 });
 
 
@@ -96,6 +95,7 @@ function handleSeenToggle(seen, currentMovie) {
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
     if (index !== -1) {
         currentMovie.seen = seen;
+        currentMovie.wish = 'false';
         moviesFromLs[index] = currentMovie;
         localStorage.setItem('all_movies', JSON.stringify(moviesFromLs));
     }
@@ -111,6 +111,7 @@ document.getElementById('movie-rating-select').addEventListener('change', (e) =>
     // Har man ej sett filmen men sätter betyg, markera som sedd
     if (!currentMovie.seen) {
         currentMovie.seen = 'true';
+        currentMovie.wish = 'false';
         seenCheckboxEl.checked = 'true';
     }
     // updateSeenMovies(currentMovie.seen, currentMovie);
