@@ -2,10 +2,13 @@ import { fetchMovies } from './fetch.js';
 import { clickTabEvents } from './tabs.js';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+let page = 1;
+let pageCount = 15;
 
 let _allMovies = [];
 let _seenMovies = [];
 let _myMovies = [];
+
 
 const seenMoviesId = 'seenMoviesDisplay';
 const allMoviesId = 'movies';
@@ -30,7 +33,7 @@ export async function checkMovies() {
         displayMovies(movies, allMoviesId);
     }
     else {
-        fetchMovies();
+        fetchMovies(page, pageCount);
         _allMovies = await JSON.parse(localStorage.getItem('all_movies'));
         displayMovies(_allMovies, allMoviesId);
     }
@@ -76,20 +79,41 @@ function displayMovies(movies, moviesContainerId) {
     }
 }
 
+// Eventlyssnare för next och preview button
+const nextButton = document.getElementById('next-page-button');
+const pageCountEl = document.getElementById('page-count')
+nextButton.addEventListener('click', () => {
+    page++;
+    pageCountEl.innerHTML = `Sida ${page}`;
+    fetchMovies(page, pageCount);
+    _allMovies = JSON.parse(localStorage.getItem('all_movies'));
+    displayMovies(_allMovies, allMoviesId)
+});
+
+const previewButton = document.getElementById('prev-page-button')
+previewButton.addEventListener('click', () => {
+    page--;
+    if (page > 0) {
+        pageCountEl.innerHTML = `Sida ${page}`;
+        _allMovies = JSON.parse(localStorage.getItem('all_movies'));
+        displayMovies(_allMovies, allMoviesId)
+    }
+});
+
 async function makeCard(movie, moviesContainerEl) {
     console.log(moviesContainerEl);
     const movieContainerEl = document.createElement('article');
-    // På min artikel vill jag ha en eventlyssnare
-    movieContainerEl.addEventListener('click', function () {
+    //  Eventlyssnare för artikel
+    movieContainerEl.addEventListener('click', () => {
         console.log('click:', movie.id);
         window.location.href = `/movieDetail.html?id=${movie.id}`;
     });
+
     let buttonContainerEl;
     let spanTextDescribingButtonEl;
     let buttonEl;
     let buttonContainerDelEl;
     let buttonDelEl;
-    let seenEl;
     let ratingEl
 
     movieContainerEl.classList.add('movie_card');

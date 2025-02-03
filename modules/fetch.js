@@ -4,9 +4,9 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 
 
 // Data från API:et
-export async function fetchMovies() {
+export async function fetchMovies(page, pageCount) {
     try {
-        const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=sv-SE&page=1`);
+        const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=sv-SE&page=${page}&per_page=${pageCount}`);
         if (!response.ok) {
             throw new Error('Error status:', response.status);
         }

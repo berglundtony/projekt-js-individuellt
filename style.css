@@ -52,6 +52,8 @@ header {
     display: block;
 }
 
+/* Page wrappers */
+
 .my_movies_wrapper {
     background-color: gray;
     padding: 20px;
@@ -75,12 +77,15 @@ div.page_wrapper {
     header {
         padding-top: .1em;
     }
-    .top-wrapper{
+
+    .top-wrapper {
         display: flex;
-            justify-content: space-between;
-            padding: 0 2em;
+        justify-content: space-between;
+        padding: 0 2em;
     }
 }
+
+/* Movie card */
 
 #movies {
     display: grid;
@@ -111,11 +116,31 @@ div.page_wrapper {
         object-fit: cover;
         margin-bottom: 10px;
     }
+
+    h3 {
+        line-height: 1.2em;
+    }
 }
 
 .movie_card.wished {
     border: 2px solid #a20000;
 }
+
+.page-buttons {
+    padding: 1em 2em;
+    display: flex;
+    gap: .5em;
+    justify-content: flex-end;
+
+    #next-page-button,
+        #prev-page-button {
+            width: 2em;
+            height: 3em;
+            padding: 2px 2px;
+        }
+}
+
+/* Knappar */
 
 .button_container {
     display: flex;
@@ -124,38 +149,44 @@ div.page_wrapper {
     margin-bottom: 5px;
     background-color: #fff;
 
-    .backbuttonDetail,
-    .addMovieWishList,
-    .deleteMovieWishList {
-        display: inline-block;
-        background-color: gray;
-        color: white;
-        width: 90px;
-        height: auto;
-        padding: 15px 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        border: 2px solid #3f3f3f;
-        border-radius: 5px;
-        padding: 5px 15px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-
-        &:hover {
-            background-color: #e3e3e3;
-            color: black;
-
-        }
-    }
-
     span {
         margin-right: 10px;
         background-color: #fff;
     }
 }
+
+#next-page-button,
+#prev-page-button,
+.backbuttonDetail,
+.addMovieWishList,
+.deleteMovieWishList {
+    display: inline-block;
+    background-color: gray;
+    color: white;
+    width: 90px;
+    height: auto;
+    padding: 15px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid #3f3f3f;
+    border-radius: 5px;
+    padding: 5px 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+
+    &:hover {
+        background-color: #e3e3e3;
+        color: black;
+
+    }
+}
+
+
+
+/* Detalj sida */
 
 .page-wrapper-detail.invisible {
     display: none;
@@ -172,8 +203,8 @@ div.page_wrapper {
     .wrapper {
         display: flex;
         justify-content: space-between;
-        width:100%;
-     
+        width: 100%;
+
     }
 
     .button_container {
