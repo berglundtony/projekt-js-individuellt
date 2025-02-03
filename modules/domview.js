@@ -11,16 +11,14 @@ export async function onPageLoad() {
 
     // Hämta filmen från LS.
     moviesFromLs = JSON.parse(localStorage.getItem('all_movies')) || [];
-    console.log(moviesFromLs);
-    // if (moviesFromLs && moviesFromLs.length > 0) {
-    currentMovie = moviesFromLs.find((element) => String(element.id) === id);
-    if (!currentMovie) {
-        console.error(`Ingen film hittades med id ${id}`);
-        return;
+    if (moviesFromLs && moviesFromLs.length > 0) {
+        currentMovie = moviesFromLs.find((element) => String(element.id) === id);
+        if (!currentMovie) {
+            console.error(`Ingen film hittades med id ${id}`);
+            return;
+        }
+        renderMovieToUI(currentMovie);
     }
-    console.log('Hittad film:', currentMovie);
-    renderMovieToUI(currentMovie);
-    // }
 }
 onPageLoad();
 
@@ -87,8 +85,7 @@ function updateSeenMovies(seen, currentMovie) {
     // Uppdatera localStorage
     try {
         localStorage.setItem('seen_movies', JSON.stringify(seenmoviesFromLs));
-        console.log('Uppdaterad seen_movies:', seenmoviesFromLs);
-
+    
     } catch (error) {
         console.error('Kunde inte uppdatera localStorage:', error);
     }
@@ -96,9 +93,7 @@ function updateSeenMovies(seen, currentMovie) {
 
 function handleSeenToggle(seen, currentMovie) {
     // Uppdatera currentMovie och moviesFromLs
-    console.log(`currentMovie ${currentMovie}`);
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
-    console.log(`index: ${index}`);
     if (index !== -1) {
         currentMovie.seen = seen;
         moviesFromLs[index] = currentMovie;
