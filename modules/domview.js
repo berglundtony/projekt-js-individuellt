@@ -1,38 +1,59 @@
-import { disableTabButtons } from './dom.js';
+import { disableTabButtons, getMovies } from './dom.js';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 let moviesFromLs = [];
 let currentMovie = {};
 
+
 export async function onPageLoad() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
 
-    // Hämta filmen från LS.
-    moviesFromLs = JSON.parse(localStorage.getItem('all_movies')) || [];
-    console.log(moviesFromLs);
-    // if (moviesFromLs && moviesFromLs.length > 0) {
-    currentMovie = moviesFromLs.find((element) => String(element.id) === id);
-    if (!currentMovie) {
-        console.error(`Ingen film hittades med id ${id}`);
-        return;
+    // Läs cachade filmer från localStorage
+   const cachedMoviesRaw = localStorage.getItem('all_movies');
+
+    if (cachedMoviesRaw) {
+        try {
+            const cachedMovies = JSON.parse(cachedMoviesRaw);
+            console.log('cachedMovies:', cachedMovies);
+            // Lägg alla filmer i en enda lista
+            moviesFromLs = Object.values(cachedMovies).reduce((acc, movies) => acc.concat(movies), []);
+            console.log('Alla filmer:', moviesFromLs);
+
+            if (moviesFromLs.length === 0) {
+                console.error('Inga filmer i cache.');
+                return;
+            }
+
+            currentMovie = moviesFromLs.find(movie => String(movie.id) === String(id));
+            console.log(`currentMovie ${currentMovie}`);
+
+            if (!currentMovie) {
+                console.error(`Ingen film hittades med id ${id}`);
+                return;
+            }
+            console.log('Hittad film:', currentMovie);
+            renderMovieToUI(currentMovie);
+        } catch (error) {
+            console.error('Fel vid parsing av cachedMovies:', error);
+        }
+    } else {
+        console.warn('Ingen cache hittad.');
     }
-    console.log('Hittad film:', currentMovie);
-    renderMovieToUI(currentMovie);
-    // }
 }
-onPageLoad();
+
+onPageLoad(); 
 
 if (window.location.href.includes('movieDetail.html')) {
     disableTabButtons();
 }
+// Spara aktiv flik i sessionStorage
+sessionStorage.setItem('lastTab', '#popular');
+
 document.getElementById('back-button').addEventListener('click', () => {
-    if (window.history.length > 1) {
-        window.history.back();
-    } else {
-        window.location.href = 'index.html';
-    }
+    const lastTab = sessionStorage.getItem('lastTab') || '#seentab';
+    window.location.href = `index.html${lastTab}`;
 });
 
 function renderMovieToUI(currentMovie) {
@@ -40,12 +61,8 @@ function renderMovieToUI(currentMovie) {
     movieImageEl.setAttribute('src', `${IMAGE_BASE_URL}${currentMovie.poster_path}`);
     movieImageEl.setAttribute('alt', `Movie poster of ${currentMovie.title}`);
     document.getElementById('header-title').innerText = currentMovie.title;
-    if (currentMovie.seen === true) {
-        document.getElementById('seen').checked = currentMovie.seen;
-    } else {
-        document.getElementById('seen')
-    };
-   
+    document.getElementById('movie-status').innerText = currentMovie.seen;
+    document.getElementById('seen').checked = currentMovie.seen;
     document.getElementById('movie-rating').innerText = `Betyg: ${currentMovie.vote_average}`;
     document.getElementById('movie-rtRating').innerText = '';
     document.getElementById('movie-description').innerText = currentMovie.overview
@@ -53,6 +70,7 @@ function renderMovieToUI(currentMovie) {
 
 // skapa eventlyssnare för när man togglar checkboxen för 'seen'
 const seenCheckboxEl = document.getElementById('seen');
+
 
 seenCheckboxEl.addEventListener('click', (e) => {
     currentMovie.seen = e.target.checked;
@@ -86,27 +104,33 @@ function updateSeenMovies(seen, currentMovie) {
     // Uppdatera localStorage
     try {
         localStorage.setItem('seen_movies', JSON.stringify(seenmoviesFromLs));
-        console.log('Uppdaterad seen_movies:', seenmoviesFromLs);
-
+        console.log('Verifiera uppdatering av currentMovie i cache:', currentMovie);  
     } catch (error) {
         console.error('Kunde inte uppdatera localStorage:', error);
     }
 }
 
+
 function handleSeenToggle(seen, currentMovie) {
     // Uppdatera currentMovie och moviesFromLs
-    // moviesFromLs = JSON.parse(localStorage.getItem('all_movies') || '[]');
+    let moviesFromLs = JSON.parse(localStorage.getItem('all_movies') || '[]');
     console.log(`currentMovie ${currentMovie}`);
+
+    if (typeof moviesFromLs === 'object' && !Array.isArray(moviesFromLs)) {
+        moviesFromLs = Object.values(moviesFromLs).flat();
+    }
+
     const index = moviesFromLs.findIndex((m) => m.id === currentMovie.id);
-    console.log(`index: ${index}`);
     if (index !== -1) {
         currentMovie.seen = seen;
+        currentMovie.wish = 'false';
         moviesFromLs[index] = currentMovie;
         localStorage.setItem('all_movies', JSON.stringify(moviesFromLs));
     }
-    // Uppdatera seen_movies
+
+    // Uppdatera seen_movies och synkronisera all_movies
     updateSeenMovies(currentMovie.seen, currentMovie);
-}
+};
 
 // ändra värde på vår rating
 document.getElementById('movie-rating-select').addEventListener('change', (e) => {

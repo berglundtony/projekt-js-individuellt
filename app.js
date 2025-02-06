@@ -1,5 +1,8 @@
-import { checkMovies } from './modules/dom.js';
+import { getMovies } from './modules/dom.js';
+import { fetchGenres } from './modules/fetch.js';
 
-checkMovies();
+getMovies();
+fetchGenres();
+
 
 

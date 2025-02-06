@@ -77,12 +77,6 @@ div.page_wrapper {
     header {
         padding-top: .1em;
     }
-
-    .top-wrapper {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 2em;
-    }
 }
 
 /* Movie card */
@@ -117,8 +111,9 @@ div.page_wrapper {
         margin-bottom: 10px;
     }
 
-    h3 {
-        line-height: 1.2em;
+    h3,
+    p {
+        line-height: 1.3em;
     }
 }
 
@@ -126,18 +121,35 @@ div.page_wrapper {
     border: 2px solid #a20000;
 }
 
-.page-buttons {
-    padding: 1em 2em;
+.top-wrapper {
     display: flex;
-    gap: .5em;
-    justify-content: flex-end;
+    justify-content: space-between;
+    padding: 0 2em;
+    align-items: center;
 
-    #next-page-button,
+
+    .page-buttons {
+        padding: 1em 2em;
+        display: flex;
+        gap: .5em;
+        justify-content: flex-end;
+
+        #next-page-button,
         #prev-page-button {
             width: 2em;
-            height: 3em;
+            height: 2em;
             padding: 2px 2px;
+            margin: 2em 0 2.6em 0;
         }
+
+        h1 {
+            text-align: center;
+        }
+
+        #page-count {
+            margin: 1.9em 0 0 0;
+        }
+    }
 }
 
 /* Knappar */
