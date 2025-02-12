@@ -5,7 +5,6 @@ import { clickTabEvents } from './tabs.js';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 let page = 1;
 
-let _allMovies = [];
 let allMoviesCache = {};
 let _seenMovies = [];
 let _myMovies = [];
